@@ -1,7 +1,6 @@
 import numpy as np
 
 from rlkit.data_management.simple_replay_buffer import SimpleReplayBuffer
-from gym.spaces import Box, Discrete, Tuple
 
 
 class MultiTaskReplayBuffer(object):
@@ -60,19 +59,10 @@ class MultiTaskReplayBuffer(object):
 
 
 def get_dim(space):
-    if isinstance(space, Box):
-        return space.low.size
-    elif isinstance(space, Discrete):
-        return space.n
-    elif isinstance(space, Tuple):
-        return sum(get_dim(subspace) for subspace in space.spaces)
-    elif hasattr(space, 'flat_dim'):
+
+    if hasattr(space, 'flat_dim'):
         return space.flat_dim
     else:
         # import OldBox here so it is not necessary to have rand_param_envs 
         # installed if not running the rand_param envs
-        from rand_param_envs.gym.spaces.box import Box as OldBox
-        if isinstance(space, OldBox):
-            return space.low.size
-        else:
-            raise TypeError("Unknown space: {}".format(space))
+        raise TypeError("Unknown space: {}".format(space))

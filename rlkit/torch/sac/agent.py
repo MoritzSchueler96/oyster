@@ -147,6 +147,7 @@ class PEARLAgent(nn.Module):
     def get_action(self, obs, deterministic=False):
         ''' sample action from the policy, conditioned on the task embedding '''
         z = self.z
+        print('obs:',obs)
         obs = ptu.from_numpy(obs[None])
         in_ = torch.cat([obs, z], dim=1)
         return self.policy.get_action(in_, deterministic=deterministic)

@@ -1,45 +1,13 @@
 import numpy as np
-from gym import Env
-from gym.spaces import Box
-import mujoco_py
+#from gym import Env
+#from gym.spaces import Box
+#import mujoco_py
 
 from rlkit.core.serializable import Serializable
 
 
-class ProxyEnv(Serializable, Env):
-    def __init__(self, wrapped_env):
-        Serializable.quick_init(self, locals())
-        self._wrapped_env = wrapped_env
-        self.action_space = self._wrapped_env.action_space
-        self.observation_space = self._wrapped_env.observation_space
 
-    @property
-    def wrapped_env(self):
-        return self._wrapped_env
-
-    def reset(self, **kwargs):
-        return self._wrapped_env.reset(**kwargs)
-
-    def step(self, action):
-        return self._wrapped_env.step(action)
-
-    def render(self, *args, **kwargs):
-        return self._wrapped_env.render(*args, **kwargs)
-
-    def log_diagnostics(self, paths, *args, **kwargs):
-        if hasattr(self._wrapped_env, 'log_diagnostics'):
-            self._wrapped_env.log_diagnostics(paths, *args, **kwargs)
-
-    @property
-    def horizon(self):
-        return self._wrapped_env.horizon
-
-    def terminate(self):
-        if hasattr(self.wrapped_env, "terminate"):
-            self.wrapped_env.terminate()
-
-
-class NormalizedBoxEnv(ProxyEnv, Serializable):
+class NormalizedBoxEnv(Serializable):
     """
     Normalize action to in [-1, 1].
 
@@ -62,7 +30,7 @@ class NormalizedBoxEnv(ProxyEnv, Serializable):
         # this env separately from the wrapped_env.
         self._serializable_initialized = False
         Serializable.quick_init(self, locals())
-        ProxyEnv.__init__(self, env)
+
         self._should_normalize = not (obs_mean is None and obs_std is None)
         if self._should_normalize:
             if obs_mean is None:
@@ -145,7 +113,7 @@ class CameraWrapper(object):
     def initialize_camera(self):
         # set camera parameters for viewing
         sim = self.sim
-        viewer = mujoco_py.MjRenderContextOffscreen(sim)
+        #viewer = mujoco_py.MjRenderContextOffscreen(sim)
         camera = viewer.cam
         camera.type = 1
         camera.trackbodyid = 0
